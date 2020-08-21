@@ -42,7 +42,7 @@ def initializeGenes(fName):
     palette = random.randint(1, 4)
 
     imageprob = random.random() # do we want tons of pics or not many
-    images = [initializeValue(imageprob) for i in imagenames]
+    images = [initializeValue(.3) for i in imagenames]
 
     edits = []
     masks = [initializeValue(.05) for i in imagenames]
