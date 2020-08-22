@@ -3,7 +3,7 @@ import os
 from PIL import Image, ImageFilter
 import sys
 sys.path.append('/Users/dorothyqu/PycharmProjects/thesis/crfasrnn_pytorch')
-import masking
+from collage_functions import masking
 
 
 class ImageAsset:

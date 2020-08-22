@@ -1,14 +1,12 @@
 import json
 import random
-from sys import path
 
 from PIL import Image
 from p5 import *
 
-import colorpalette
-import positions
-from ImageAsset import ImageAsset
-from colorpalette import get_palette
+from collage_functions import positions, colorpalette
+from collage_functions.ImageAsset import ImageAsset
+from collage_functions.colorpalette import get_palette
 
 
 class Collage:

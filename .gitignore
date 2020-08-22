@@ -2,6 +2,7 @@
 old
 crfasrnn_weights.pth
 venv
+decades
 
 # Logs
 logs

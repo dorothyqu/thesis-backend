@@ -1,15 +1,13 @@
 import sys
 import time
 
-from flask import Flask, jsonify, request, url_for, render_template
+from flask import Flask, jsonify, request, url_for
 import json
-import asyncio
 from subprocess import Popen, PIPE
 import os
 from werkzeug.utils import secure_filename # for securing user-made filenames
 
 sys.path.append('/Users/dorothyqu/PycharmProjects/thesis/')
-import evolutionary
 
 # constants for uploading images
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}

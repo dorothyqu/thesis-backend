@@ -22,7 +22,7 @@ def crop(input_file, output_file):
     cv2.imwrite("labels.png", opening)
 
     # reupload mask as a greyscale array, turn into black and white
-    mask = np.array(Image.open('crfasrnn_pytorch/labels.png').convert('L').resize(src.shape[1::-1], Image.BILINEAR))
+    mask = np.array(Image.open('../crfasrnn_pytorch/labels.png').convert('L').resize(src.shape[1::-1], Image.BILINEAR))
     mask[mask != 0] = 255 # make everything in the mask that's not black to be white... AKA opaque!
 
     # add alpha layer

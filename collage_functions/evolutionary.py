@@ -3,14 +3,14 @@ import json
 import os
 import sys
 
-import colorpalette
-from Collage import Collage
-from colorpalette import *
+from collage_functions import colorpalette
+from collage_functions.Collage import Collage
+from collage_functions.colorpalette import *
 import random
 
-path="/Users/dorothyqu/PycharmProjects/thesis/decades/cat/"
+path= "/decades/cat/"
 
-PATH_PRE = "/Users/dorothyqu/PycharmProjects/thesis/flask/todo/static/"
+PATH_PRE = "/flask/todo/static/"
 FILE_NAME = None
 
 # input: probability that it will be a 1
