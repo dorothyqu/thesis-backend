@@ -3,6 +3,7 @@ old
 crfasrnn_weights.pth
 venv
 decades
+downloads
 
 # Logs
 logs
