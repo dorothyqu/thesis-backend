@@ -2,8 +2,7 @@
 old
 crfasrnn_weights.pth
 venv
-decades
-downloads
+flask/todo/decades
 
 # Logs
 logs
