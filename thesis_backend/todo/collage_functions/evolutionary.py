@@ -3,16 +3,16 @@ import json
 import os
 import sys
 
-from thesis_backend.todo.collage_functions import colorpalette
+# sys.path.append("..") # Adds higher directory to python modules path.
+sys.path.append('/Users/dorothyqu/PycharmProjects/thesis/')
+
 from thesis_backend.todo.collage_functions.Collage import Collage
-# from Collage import Collage
 from thesis_backend.todo.collage_functions.colorpalette import *
-# from colorpalette import *
 import random
 
-path= "../decades/cat/"
+PIC_PATH= "/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/decades/cat/"
 
-PATH_PRE = "../static/"
+PATH_PRE = "/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/static/"
 FILE_NAME = None
 
 # input: probability that it will be a 1
@@ -35,12 +35,12 @@ def initializeRotation():
 def initializeGenes(fName):
     # GENE TIME
     # set up the paths
-    imagenames = glob.glob(path+"*")
-    texturenames = glob.glob("../textures/*")
-    brushnames = glob.glob("../brushes/*")
+    imagenames = glob.glob(PIC_PATH+"*")
+    texturenames = glob.glob("/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/textures/*")
+    brushnames = glob.glob("/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/brushes/*")
 
     p = np.random.normal(.5, .1)
-    color = colorpalette.randomcolor()
+    color = randomcolor()
     palette = random.randint(1, 4)
 
     imageprob = random.random() # do we want tons of pics or not many
@@ -105,7 +105,6 @@ def draw():
     exit()
 
 if __name__ == '__main__':
-
     # get the full paths for the json and png files
     defFileName = "collage"
     if len(sys.argv) > 1: # first arg is the name for the file ex. "collage11"

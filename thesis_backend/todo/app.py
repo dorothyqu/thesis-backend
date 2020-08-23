@@ -7,12 +7,12 @@ from subprocess import Popen, PIPE
 import os
 from werkzeug.utils import secure_filename # for securing user-made filenames
 
-sys.path.append('/Users/dorothyqu/PycharmProjects/thesis/')
+# sys.path.append('/Users/dorothyqu/PycharmProjects/thesis/')
+# sys.path.append('/Users/dorothyqu/PycharmProjects/thesis/thesis_backend')
 
 # constants for uploading images
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 UPLOAD_FOLDER = '/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/static/'
-
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER

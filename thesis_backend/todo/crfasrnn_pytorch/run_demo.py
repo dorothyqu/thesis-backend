@@ -32,7 +32,7 @@ def get_labels(input_file):
     img_data, img_h, img_w, size = util.get_preprocessed_image(input_file)
 
     # Download the model from https://tinyurl.com/crfasrnn-weights-pth
-    saved_weights_path = "/flask/todo/crfasrnn_pytorch/crfasrnn_weights.pth"
+    saved_weights_path = "/todo/crfasrnn_pytorch/crfasrnn_weights.pth"
 
     model = CrfRnnNet()
     model.load_state_dict(torch.load(saved_weights_path))
