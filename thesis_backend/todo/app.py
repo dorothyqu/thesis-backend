@@ -7,9 +7,6 @@ from subprocess import Popen, PIPE
 import os
 from werkzeug.utils import secure_filename # for securing user-made filenames
 
-# sys.path.append('/Users/dorothyqu/PycharmProjects/thesis/')
-# sys.path.append('/Users/dorothyqu/PycharmProjects/thesis/thesis_backend')
-
 # constants for uploading images
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 UPLOAD_FOLDER = '/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/static/'
@@ -25,8 +22,7 @@ API_BASE = "http://127.0.0.1:5000/"
 def get_img_urls(year, place, imagePaths):
 
     # open json metadata file and figure out where to save
-    pathPre = "/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/static"
-    mdPath = "{}/metadata.json".format(pathPre)
+    mdPath = "{}/metadata.json".format(UPLOAD_FOLDER)
     if os.path.exists(mdPath):
         with open(mdPath, "r") as mdFile:
             metadata = json.load(mdFile)

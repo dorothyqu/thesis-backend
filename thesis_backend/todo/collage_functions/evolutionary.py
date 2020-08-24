@@ -10,9 +10,10 @@ from thesis_backend.todo.collage_functions.Collage import Collage
 from thesis_backend.todo.collage_functions.colorpalette import *
 import random
 
-PIC_PATH= "/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/decades/cat/"
+ABS_PATH= "/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/"
+PIC_PATH= ABS_PATH + "decades/cat/"
 
-PATH_PRE = "/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/static/"
+PATH_PRE = ABS_PATH + "static/"
 FILE_NAME = None
 
 # input: probability that it will be a 1
@@ -36,8 +37,8 @@ def initializeGenes(fName):
     # GENE TIME
     # set up the paths
     imagenames = glob.glob(PIC_PATH+"*")
-    texturenames = glob.glob("/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/textures/*")
-    brushnames = glob.glob("/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/brushes/*")
+    texturenames = glob.glob(ABS_PATH + "textures/*")
+    brushnames = glob.glob(ABS_PATH + "brushes/*")
 
     p = np.random.normal(.5, .1)
     color = randomcolor()

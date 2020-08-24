@@ -1,6 +1,7 @@
 # Thesis stuff
 old
 venv
+.vscode
 
 # Logs
 logs
