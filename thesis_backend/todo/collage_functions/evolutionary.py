@@ -1,14 +1,22 @@
 import glob
 import json
 import os
+import pathlib
 import sys
 
+# # set to true in production
+# IS_PRODUCTION = False
+
 # sys.path.append("..") # Adds higher directory to python modules path.
-sys.path.append('/Users/dorothyqu/PycharmProjects/thesis/')
+PATH_TO_APPEND = str(pathlib.Path(__file__).parent.parent.parent.parent.absolute()) + "/"
+print("Appending path: " + PATH_TO_APPEND)
+sys.path.append(PATH_TO_APPEND)
+
 
 from thesis_backend.todo.collage_functions.Collage import Collage
 from thesis_backend.todo.collage_functions.colorpalette import *
 import random
+
 
 ABS_PATH= "/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/"
 PIC_PATH= ABS_PATH + "decades/cat/"

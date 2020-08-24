@@ -4,12 +4,21 @@ import time
 from flask import Flask, jsonify, request, url_for
 import json
 from subprocess import Popen, PIPE
+import pathlib
 import os
 from werkzeug.utils import secure_filename # for securing user-made filenames
 
+# # set to true in production
+# IS_PRODUCTION = False
+
 # constants for uploading images
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-UPLOAD_FOLDER = '/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/static/'
+# UPLOAD_FOLDER = '/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/static/'
+print("Computed upload folder: ")
+UPLOAD_FOLDER = str(pathlib.Path(__file__).parent.absolute()) + "/static/"
+
+print(UPLOAD_FOLDER)
+
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
