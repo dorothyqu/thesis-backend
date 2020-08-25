@@ -1,4 +1,6 @@
 import os
+from os import path 
+import pathlib
 import PIL
 import numpy as np
 import cv2
@@ -13,8 +15,13 @@ class ImageAsset:
         self.y = y
         self.tint = tint
         self.rotate = 0
+
+        # names 
         self.name = filename
+        self.basename = os.path.basename(self.name)
         self.img = Image.open(self.name).convert('RGBA')
+        self.editpath = str(pathlib.Path(self.name).parent.absolute()) + "/edited/"
+
         self.width, self.height = self.img.size
         if self.width > 1000 or self.height > 1000:
             self.name.thumbnail((500, 500))
@@ -25,25 +32,28 @@ class ImageAsset:
         self.rotation = rotation
 
     def mask(self):
-        masking.crop(self.name, os.path.splitext(self.name)[0] + "crop.png")
-        self.img = Image.open(os.path.splitext(self.name)[0]+"crop.png").convert('RGBA')
+        edited = self.editpath + os.path.splitext(self.basename)[0] + "crop.png"
+        if not path.exists(edited): 
+            masking.crop(self.name, edited)
+        self.img = Image.open(edited).convert('RGBA')
 
     def blackwhite(self):
-        masking.blackwhitemask(self.name, os.path.splitext(self.name)[0] + "blackwhite.png")
-        self.img = Image.open(os.path.splitext(self.name)[0] + "blackwhite.png").convert('RGBA')
+        edited = self.editpath + os.path.splitext(self.basename)[0] + "blackwhite.png"
+        if not path.exists(edited): 
+            masking.blackwhitemask(self.name, edited)
+        self.img = Image.open(edited).convert('RGBA')
 
     def colorize(self, r, g, b, a):
         # read the target file
         target_img = cv2.imread(self.name)
-
         # create an image with a single color
         colored_img = np.full(target_img.shape, (r, g, b), np.uint8)
-
         # add the filter  with a weight factor of 20% to the target image
         fused_img = cv2.addWeighted(target_img, 1-a, colored_img, a, 0)
 
-        cv2.imwrite(os.path.splitext(self.name)[0] + "tinted.png", fused_img)
-        self.img = Image.open(os.path.splitext(self.name)[0] + "tinted.png").convert('RGBA')
+        edited = self.editpath + os.path.splitext(self.basename)[0] + "tinted.png"
+        cv2.imwrite(edited, fused_img)
+        self.img = Image.open(edited).convert('RGBA')
 
     def place(self, background):
         if self.tint != None:
