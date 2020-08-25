@@ -42,8 +42,11 @@ def initializeGenes(fName):
     # GENE TIME
     # set up the paths
     imagenames = glob.glob(PIC_PATH+"*")
+    imagenames = [f for f in imagenames if os.path.isfile(f)]
     texturenames = glob.glob(ABS_PATH + "textures/*")
+    texturenames = [f for f in texturenames if os.path.isfile(f)]
     brushnames = glob.glob(ABS_PATH + "brushes/*")
+    brushnames = [f for f in brushnames if os.path.isfile(f)]
 
     p = np.random.normal(.5, .1)
     color = randomcolor()

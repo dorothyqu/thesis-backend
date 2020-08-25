@@ -25,7 +25,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # todo: test this
 
 # define constants
-API_BASE = "http://127.0.0.1:5000/"
+API_BASE = "http://generativepaintings.com:5000" #"http://127.0.0.1:5000/"
 
 # helpful functions
 def get_img_urls(year, place, imagePaths):
@@ -66,7 +66,8 @@ def get_img_urls(year, place, imagePaths):
         # '/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/collage_functions/evolutionary.py'
     ]
     print(cmd)
-    running_procs = [Popen(cmd + [fName], stdout=PIPE, stderr=PIPE) for fName in fNames]
+    
+    running_procs = [Popen(cmd + [fName], stdout=PIPE, stderr=PIPE, universal_newlines=True) for fName in fNames]
 
     # wait for them to finish
     print("% Waiting for sub-processes to finish...")
@@ -88,6 +89,8 @@ def get_img_urls(year, place, imagePaths):
     print("All collages complete.")
 
     # return image URLs
+    # imageURLs = ["http://generativepaintings.com:5000/static/{}".format(fName) for fName in fNames]
+    # print(imageURLs)
     imageURLs = [url_for('static', filename="{}.png".format(fName)) for fName in fNames]
     return imageURLs
 

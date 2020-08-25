@@ -63,6 +63,7 @@ class Collage:
     def setup(self):
         global pos
         pos = positions.get_locations(self.n, self.p)
+        print(pos)
         colors = colorpalette.get_palette(self.color, self.palette)
 
         x = 0 # to iterate through the nodes
@@ -119,9 +120,9 @@ class Collage:
             overlay = overlay.crop((0, 0, 1000, 1100))
             overlay.save(self.texturenames[self.textures[1]])
 
-        overlay = Image.open(self.texturenames[self.textures[1]])
+        overlay = Image.open(self.texturenames[self.textures[1]]).convert('RGBA')
         overlay.putalpha(128)
-        # background.paste(overlay, (0, 0))
+        background.paste(overlay, (0, 0))
 
         self.collage = background
 

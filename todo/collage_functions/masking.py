@@ -1,5 +1,5 @@
 import pathlib
-
+import PIL
 import cv2
 import numpy as np
 from PIL import Image
@@ -9,7 +9,12 @@ from todo.crfasrnn_pytorch.run_demo import get_labels
 PATH_TO_APPEND = str(pathlib.Path(__file__).parent.parent.absolute()) + "/"
 
 def crop(input_file, output_file):
-    get_labels(input_file)
+    print("you're masking")
+    print(input_file)
+    rgba_image = PIL.Image.open(input_file)
+    rgb_image = rgba_image.convert('RGB')
+    rgb_image.save(os.path.splitext(input_file)[0] + "precrop.png")
+    get_labels(os.path.splitext(input_file)[0] + "precrop.png")
 
     # upload source image, add alpha channel
     src = np.array(Image.open(input_file))
