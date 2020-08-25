@@ -3,7 +3,6 @@ import pathlib
 import random
 
 from PIL import Image
-from p5 import *
 
 from todo.collage_functions import colorpalette, positions
 from todo.collage_functions.ImageAsset import ImageAsset

@@ -1,4 +1,3 @@
-from p5 import *
 import os
 from PIL import Image, ImageFilter
 import sys
@@ -13,7 +12,7 @@ class ImageAsset:
         self.tint = tint
         self.rotate = 0
         self.name = filename
-        self.img = load_image(self.name)
+        self.img = Image.open(self.name)
         self.width, self.height = self.img.size
         if self.width > 1000 or self.height > 1000:
             image = Image.open(self.name)
@@ -33,7 +32,7 @@ class ImageAsset:
         masking.blackwhitemask(self.name, os.path.splitext(self.name)[0] + "blackwhite.png")
         self.img = load_image(os.path.splitext(self.name)[0] + "blackwhite.png")
 
-    def place(self):
+    def place(self, background):
         if self.tint != None:
             colors, a = self.tint
             if colors != None:
@@ -56,6 +55,3 @@ class ImageAsset:
         rotate(math.radians(self.rotation))
         image(self.img, (self.x - self.width/2,self.y - self.height/2))
         rotate(math.radians(360-self.rotation))
-
-    def get_img(self):
-        return self.img
