@@ -1,9 +1,8 @@
 import json
 import pathlib
 import random
-
 from PIL import Image
-
+import numpy as np
 from todo.collage_functions import colorpalette, positions
 from todo.collage_functions.ImageAsset import ImageAsset
 
@@ -57,6 +56,9 @@ class Collage:
         # bunch of random things, like repeating an image?
         self.random = None
 
+        # where the collage is stored
+        self.collage = None
+
     # call this to automatically set up everything
     def setup(self):
         global pos
@@ -69,7 +71,7 @@ class Collage:
             print(self.imagenames[i])
             # print(self.imagenames[i], pos[x][0], pos[x][1], self.rotate[i])
             if self.images[i] == 1:
-                self.imglist.append(ImageAsset(self.imagenames[i], pos[x][0], pos[x][1], (random.choice(colors), 180), None, 1000, self.rotate[i]))
+                self.imglist.append(ImageAsset(self.imagenames[i], pos[x][0], pos[x][1], (random.choice(colors), .4), None, 1000, self.rotate[i]))
                 if self.mask[i] == 1:
                     self.imglist[-1].mask()
                 if self.tint[i] == 1:
@@ -78,9 +80,10 @@ class Collage:
 
     # call this to automatically draw everything
     def draw(self):
-        # get the background
-        no_tint()
+        # draw the background
+        background = Image.new('RGBA', (900, 1100), (0, 255, 255, 255))
 
+        # get the background texture
         bkg = Image.open(self.texturenames[self.textures[0]])
         width, height = bkg.size
         if width > 1000 or height > 1100:
@@ -97,27 +100,30 @@ class Collage:
             bkg = bkg.crop((0, 0, 1000, 1100))
             bkg.save(self.texturenames[self.textures[0]])
 
-        bkg = load_image(self.texturenames[self.textures[0]])
-        image(bkg, (0, 0))
+        bkg = Image.open(self.texturenames[self.textures[0]])
+        background.paste(bkg, (0, 0))
 
         for i in self.imglist:
-            i.place()
+            i.place(background)
 
+        # TODO: this stuff
         for i in range(len(self.brushes)):
             if self.brushes[i] == 1:
-                brush = load_image(self.brushnames[i])
-                image(brush, (pos[0][0], pos[1][0]))
+                brush = Image.open(self.brushnames[i]).convert('RGBA')
+                background.paste(brush, (pos[0][0], pos[1][0]), mask=brush)
 
         # add the overlay
-        tint(255, 50)
         overlay = Image.open(self.texturenames[self.textures[1]])
         width, height = overlay.size
         if width > 1000 or height > 1100:
             overlay = overlay.crop((0, 0, 1000, 1100))
             overlay.save(self.texturenames[self.textures[1]])
 
-        overlay = load_image(self.texturenames[self.textures[1]])
-        image(overlay, (0, 0))
+        overlay = Image.open(self.texturenames[self.textures[1]])
+        overlay.putalpha(128)
+        # background.paste(overlay, (0, 0))
+
+        self.collage = background
 
     # create an offspring that is similar to the original parent
     # return the json file with the parent name + 1
@@ -213,3 +219,6 @@ class Collage:
         # return the same value
         else:
             return value
+
+    def save(self, filename):
+        self.collage.save(filename)

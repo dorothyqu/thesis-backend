@@ -3,9 +3,7 @@ import json
 import os
 import pathlib
 import sys
-from p5 import *
-# # set to true in production
-# IS_PRODUCTION = False
+import numpy as np
 
 sys.path.append("..") # Adds higher directory to python modules path.
 from todo.collage_functions.colorpalette import randomcolor
@@ -84,7 +82,6 @@ def initializeGenes(fName):
 
 def setup():
     global colors, pos, collage
-    size(900,1100)
 
     # save the json
     jsonPath = "{}{}.json".format(PATH_PRE, FILE_NAME)
@@ -104,13 +101,7 @@ def draw():
     fullPath = "{}{}".format(PATH_PRE, FILE_NAME)
     correctName = "{}.png".format(fullPath)
     # saving adds 4 0s for some reason
-    save(correctName)
-
-    # so fix it lmao
-    os.rename("{}0000.png".format(fullPath), correctName)
-
-    # all done
-    exit()
+    collage.save(correctName)
 
 if __name__ == '__main__':
     # get the full paths for the json and png files
@@ -121,4 +112,5 @@ if __name__ == '__main__':
         print("No filename supplied, defaulting to '{}'".format(defFileName))
         FILE_NAME = defFileName
 
-    run()
+    setup()
+    draw()

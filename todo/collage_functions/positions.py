@@ -16,7 +16,7 @@ def get_locations(n, p):
     locations = []
     for node in pos.values():
         # x and y values
-        xy = get_new_value(node[0]), get_new_value(node[1])
+        xy = int(get_new_value(node[0])), int(get_new_value(node[1]))
         locations.append(xy)
     # nx.draw(G)
     # print(locations)
