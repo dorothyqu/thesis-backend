@@ -56,7 +56,7 @@ def initializeGenes(fName):
     images = [initializeValue(.3) for i in imagenames]
 
     edits = []
-    masks = [initializeValue(.05) for i in imagenames]
+    masks = [initializeValue(.1) for i in imagenames]
     blur = [initializeValue(.05) for i in imagenames]
     rotate = [initializeRotation() for i in imagenames]
     tint = [initializeValue(.05) for i in imagenames]

@@ -1,6 +1,7 @@
 import pathlib
 import PIL
 import cv2
+import os
 import numpy as np
 from PIL import Image
 # from flask import
@@ -23,11 +24,11 @@ def crop(input_file, output_file):
     # smooth out the mask
     # uncomment out for smoothing
     #https://stackoverflow.com/questions/41313642/smooth-edges-of-a-segmented-mask
-    img = cv2.imread('labels.png', 0)
+    img = cv2.imread(os.path.splitext(input_file)[0] + "precrop.png", 0)
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
     (thresh, binRed) = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY)
     opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel, iterations=3)
-    cv2.imwrite("labels.png", opening)
+    cv2.imwrite(os.path.splitext(input_file)[0] + "precrop.png", opening)
 
     # reupload mask as a greyscale array, turn into black and white
     mask = np.array(Image.open(PATH_TO_APPEND + 'crfasrnn_pytorch/labels.png').convert('L').resize(src.shape[1::-1], Image.BILINEAR))
@@ -38,8 +39,12 @@ def crop(input_file, output_file):
 
     img = Image.fromarray(RGBA, 'RGBA')
     img.save(output_file)
+    
+    #now delete precrop 
+    os.remove(os.path.splitext(input_file)[0] + "precrop.png")
 
 def blackwhitemask(input_file, output_file):
+    print("you're doing black and white stuff")
     # reupload mask as a greyscale array, turn into black and white
     original = cv2.imread(input_file)
     gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)

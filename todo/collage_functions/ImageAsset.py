@@ -77,5 +77,6 @@ class ImageAsset:
         # weird rotation stuff to keep the background transparent
         self.img = self.img.rotate(self.rotation, expand = True, fillcolor = (0, 0, 0, 0))
 
-        # paste the image
+        # paste the image, with transparency 
+        overlay_mask = self.img.split()[3].point(lambda i: i * self.transparency / 100.)
         Image.Image.paste(background, self.img, (int(self.x - self.width/2), int(self.y - self.height/2)), mask=self.img)
