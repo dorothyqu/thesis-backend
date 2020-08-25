@@ -1,7 +1,9 @@
 # Thesis stuff
 old
 venv
+backend_env_3.7.9
 .vscode
+__pycache__
 
 # Logs
 logs

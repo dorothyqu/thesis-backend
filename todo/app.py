@@ -57,9 +57,12 @@ def get_img_urls(year, place, imagePaths):
     # launch sub-processes to create collages credit: https://stackoverflow.com/a/636601 (edited a lil)
     print("Launching sub-processes:")
     cmd = [
-        str(pathlib.Path(__file__).parent.parent.absolute()) + "/venv/bin/python",
+        "/home/dorothy/thesis-backend/backend_env_3.7.9/bin/python",
+        "/home/dorothy/thesis-backend/todo/collage_functions/evolutionary.py"
+        # /home/dorothy/thesis-backend/todo/backend_env_3.7.9/bin/python
+        # str(pathlib.Path(__file__).parent.parent.parent.absolute()) + "/backend_env_3.7.9/bin/python",
         # '/Users/dorothyqu/PycharmProjects/thesis/venv/bin/python',
-        str(pathlib.Path(__file__).parent.absolute()) + "/collage_functions/evolutionary.py"
+        # str(pathlib.Path(__file__).parent.absolute()) + "/collage_functions/evolutionary.py"
         # '/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/collage_functions/evolutionary.py'
     ]
     print(cmd)
@@ -115,27 +118,8 @@ def securedAndVersioned(filename, override=False):
 @app.route('/')
 def hello_world():
     """Print 'Hello, world!' as the response body."""
-    return 'Hello, world!'
-
-@app.route('/help', methods=["GET"])
-def info_view():
-    """List of routes for this API."""
-    output = {
-        'bab': ['hello'],
-        'info': 'GET /api/v1',
-        'register': 'POST /api/v1/accounts',
-        'single profile detail': 'GET /api/v1/accounts/<username>',
-        'edit profile': 'PUT /api/v1/accounts/<username>',
-        'delete profile': 'DELETE /api/v1/accounts/<username>',
-        'login': 'POST /api/v1/accounts/login',
-        'logout': 'GET /api/v1/accounts/logout',
-        "user's tasks": 'GET /api/v1/accounts/<username>/tasks',
-        "create task": 'POST /api/v1/accounts/<username>/tasks',
-        "task detail": 'GET /api/v1/accounts/<username>/tasks/<id>',
-        "task update": 'PUT /api/v1/accounts/<username>/tasks/<id>',
-        "delete task": 'DELETE /api/v1/accounts/<username>/tasks/<id>'
-    }
-    return jsonify(output)
+    return 'Hello, Dorothy'
+    # return 'Hello, world!'
 
 # generate an image and return image's URL
 @app.route('/collage/req', methods=["POST"])
@@ -175,3 +159,6 @@ def get_img():
         })
     res.headers.add('Access-Control-Allow-Origin', '*')  # to fix annoying CORS problem
     return res
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000) 
