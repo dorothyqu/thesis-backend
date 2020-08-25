@@ -3,7 +3,8 @@ import time
 
 from flask import Flask, jsonify, request, url_for
 import json
-from subprocess import Popen, PIPE
+# from subprocess import Popen, PIPE
+import subprocess
 import pathlib
 import os
 from werkzeug.utils import secure_filename # for securing user-made filenames
@@ -59,33 +60,34 @@ def get_img_urls(year, place, imagePaths):
     cmd = [
         "/home/dorothy/thesis-backend/backend_env_3.7.9/bin/python",
         "/home/dorothy/thesis-backend/todo/collage_functions/evolutionary.py"
-        # /home/dorothy/thesis-backend/todo/backend_env_3.7.9/bin/python
-        # str(pathlib.Path(__file__).parent.parent.parent.absolute()) + "/backend_env_3.7.9/bin/python",
-        # '/Users/dorothyqu/PycharmProjects/thesis/venv/bin/python',
-        # str(pathlib.Path(__file__).parent.absolute()) + "/collage_functions/evolutionary.py"
-        # '/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/collage_functions/evolutionary.py'
     ]
     print(cmd)
     
-    running_procs = [Popen(cmd + [fName], stdout=PIPE, stderr=PIPE, universal_newlines=True) for fName in fNames]
+    # running_procs = [Popen(cmd + [fName], stdout=PIPE, stderr=PIPE, universal_newlines=True) for fName in fNames]
 
     # wait for them to finish
     print("% Waiting for sub-processes to finish...")
-    while running_procs:
-        for proc in running_procs:
-            retcode = proc.poll()
-            if retcode is not None: # process finished
-                running_procs.remove(proc)
-                break
-            else: # no process is done, wait a bit and check again
-                time.sleep(.1)
-                continue
-        # either we ran out of procs or `proc` has finished with return code `retcode`
-        if retcode is not None: # a proc actually finished
-            if retcode == 0:
-                print("% - A collage has been created")
-            else:
-                print("% - There was an error creating a collage.")
+
+    for fName in fNames:
+        subprocess.call(cmd + [fName])
+        print(" - completed a collage")
+
+
+    # while running_procs:
+    #     for proc in running_procs:
+    #         retcode = proc.poll()
+    #         if retcode is not None: # process finished
+    #             running_procs.remove(proc)
+    #             break
+    #         else: # no process is done, wait a bit and check again
+    #             time.sleep(.1)
+    #             continue
+    #     # either we ran out of procs or `proc` has finished with return code `retcode`
+    #     if retcode is not None: # a proc actually finished
+    #         if retcode == 0:
+    #             print("% - A collage has been created")
+    #         else:
+    #             print("% - There was an error creating a collage.")
     print("All collages complete.")
 
     # return image URLs

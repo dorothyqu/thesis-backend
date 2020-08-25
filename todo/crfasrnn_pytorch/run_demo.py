@@ -29,18 +29,20 @@ import torch
 from todo.crfasrnn_pytorch.crfasrnn import util
 from todo.crfasrnn_pytorch.crfasrnn.crfasrnn_model import CrfRnnNet
 
-WEIGHTS_PATH = str(pathlib.Path(__file__).parent.parent.absolute()) + "/crfasrnn_pytorch/crfasrnn_weights.pth"
-print("Weights path: " + WEIGHTS_PATH)
+WEIGHTS_PATH = str(pathlib.Path(__file__).parent.parent.absolute()) 
+print("Weights path: " + WEIGHTS_PATH + "/crfasrnn_pytorch/crfasrnn_weights.pth")
 
 def get_labels(input_file):
     # Read the image
     img_data, img_h, img_w, size = util.get_preprocessed_image(input_file)
 
+    print("loading model")
     model = CrfRnnNet()
-    model.load_state_dict(torch.load(WEIGHTS_PATH))
+    model.load_state_dict(torch.load(WEIGHTS_PATH + "/crfasrnn_pytorch/crfasrnn_weights.pth"))
     model.eval()
     out = model.forward(torch.from_numpy(img_data))
 
+    print("saving labels")
     probs = out.detach().numpy()[0]
     label_im = util.get_label_image(probs, img_h, img_w, size)
-    label_im.save('labels.png')
+    label_im.save(WEIGHTS_PATH + '/crfasrnn_pytorch/labels.png')

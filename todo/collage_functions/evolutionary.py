@@ -56,10 +56,11 @@ def initializeGenes(fName):
     images = [initializeValue(.3) for i in imagenames]
 
     edits = []
-    masks = [initializeValue(.05) for i in imagenames]
+    masks = [initializeValue(.1) for i in imagenames]
     blur = [initializeValue(.05) for i in imagenames]
     rotate = [initializeRotation() for i in imagenames]
-    tint = [initializeValue(.05) for i in imagenames]
+    tint = [initializeValue(.1) for i in imagenames]
+    point = [initializeValue(.1) for i in imagenames]
     textures = [0, 1]
     brushes = [initializeValue(.3) for i in brushnames]
 
@@ -67,6 +68,7 @@ def initializeGenes(fName):
     edits.append(blur)
     edits.append(rotate)
     edits.append(tint)
+    edits.append(point)
 
     # saveies genes
     with open(fName, 'w+') as outfile:

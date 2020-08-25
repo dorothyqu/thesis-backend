@@ -45,6 +45,7 @@ class Collage:
         self.blur = edits[1]
         self.rotate = edits[2]
         self.tint = edits[3]
+        self.point = edits[4]
 
         # textures – to add random textures? First is the background, second is the overlay, third is...
         self.textures = textures
@@ -66,17 +67,20 @@ class Collage:
         print(pos)
         colors = colorpalette.get_palette(self.color, self.palette)
 
+        # TODO: represent transparency and other edits 
         x = 0 # to iterate through the nodes
         # go through every image and either represent it or don't
         for i in range(len(self.images)):
             print(self.imagenames[i])
             # print(self.imagenames[i], pos[x][0], pos[x][1], self.rotate[i])
             if self.images[i] == 1:
-                self.imglist.append(ImageAsset(self.imagenames[i], pos[x][0], pos[x][1], (random.choice(colors), .4), None, 1000, self.rotate[i]))
+                self.imglist.append(ImageAsset(self.imagenames[i], pos[x][0], pos[x][1], (random.choice(colors), .4), None, 200, self.rotate[i]))
                 if self.mask[i] == 1:
                     self.imglist[-1].mask()
                 if self.tint[i] == 1:
                     self.imglist[-1].blackwhite()
+                if self.point[i] == 2:
+                    self.imglist[-1].pointillism()
                 x+=1
 
     # call this to automatically draw everything
@@ -107,12 +111,13 @@ class Collage:
         for i in self.imglist:
             i.place(background)
 
-        # TODO: this stuff
+        # TODO: brush genes
         for i in range(len(self.brushes)):
             if self.brushes[i] == 1:
                 brush = Image.open(self.brushnames[i]).convert('RGBA')
                 background.paste(brush, (pos[0][0], pos[1][0]), mask=brush)
 
+        # TODO: Overlay genes 
         # add the overlay
         overlay = Image.open(self.texturenames[self.textures[1]])
         width, height = overlay.size
@@ -121,8 +126,8 @@ class Collage:
             overlay.save(self.texturenames[self.textures[1]])
 
         overlay = Image.open(self.texturenames[self.textures[1]]).convert('RGBA')
-        overlay.putalpha(128)
-        background.paste(overlay, (0, 0))
+        overlay_mask = overlay.split()[3].point(lambda i: i * 30 / 100.)
+        background.paste(overlay, (0, 0), mask=overlay_mask)
 
         self.collage = background
 
