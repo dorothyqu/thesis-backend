@@ -63,8 +63,17 @@ class ImageAsset:
         # add the filter  with a weight factor of 20% to the target image
         fused_img = cv2.addWeighted(target_img, 1-a, colored_img, a, 0)
 
+        # add transparency back 
+        alpha = self.img.split()[-1]
+
+        # First create the image with alpha channel
+        rgba = cv2.cvtColor(fused_img, cv2.COLOR_RGB2RGBA)
+
+        # Then assign the mask to the last channel of the image
+        rgba[:, :, 3] = alpha
+
         edited = self.editpath + os.path.splitext(self.basename)[0] + "tinted.png"
-        cv2.imwrite(edited, fused_img)
+        cv2.imwrite(edited, rgba)
         self.rename(edited)
 
     def place(self, background):

@@ -61,8 +61,9 @@ def initializeGenes(fName):
     rotate = [initializeRotation() for i in imagenames]
     tint = [initializeValue(.1) for i in imagenames]
     point = [initializeValue(.1) for i in imagenames]
-    textures = [0, 1]
-    brushes = [initializeValue(.3) for i in brushnames]
+    textures = [initializeValue(.1) for i in texturenames]
+    backgrounds = [initializeValue(.1) for i in texturenames]
+    brushes = [initializeValue(.1) for i in brushnames]
 
     edits.append(masks)
     edits.append(blur)
@@ -82,7 +83,8 @@ def initializeGenes(fName):
             "textures": textures,
             "texturenames": texturenames,
             "brushes": brushes,
-            "brushnames": brushnames
+            "brushnames": brushnames, 
+            "backgrounds" : backgrounds
         }, outfile, indent=2)
 
 def setup():

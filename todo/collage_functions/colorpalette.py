@@ -32,7 +32,7 @@ def get_palette(color, scheme):
         colors.append((int(r/golden), int(g/golden), int(b/golden)))
         colors.append((int(r / golden/golden), int(g / golden/golden), int(b / golden/golden)))
 
-    if scheme == 4:
+    else:
         colors.append((min(255, int(b * golden*golden)), min(255, int(g/golden)),min(255, int(r/golden))))
         colors.append((min(255, int(r/1.1)), min(255, int(b*golden)), min(255, int(g*1.1/golden))))
         colors.append(color)

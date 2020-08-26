@@ -1,13 +1,14 @@
 import json
 import pathlib
 import random
+import PIL
 from PIL import Image
 import numpy as np
 from todo.collage_functions import colorpalette, positions
 from todo.collage_functions.ImageAsset import ImageAsset
 
 PATH_TO_APPEND = str(pathlib.Path(__file__).parent.absolute()) + "/"
-
+CANVAS_SIZE = (900, 1100)
 class Collage:
     # create all the genes within a collage
     def __init__(self, genes):
@@ -23,6 +24,7 @@ class Collage:
         texturenames = genes["texturenames"]
         brushes = genes["brushes"]
         brushnames = genes["brushnames"]
+        backgrounds = genes["backgrounds"]
 
         self.imagenames = imagenames # a list of all the image names in a path
         self.p = p
@@ -50,6 +52,7 @@ class Collage:
         # textures – to add random textures? First is the background, second is the overlay, third is...
         self.textures = textures
         self.texturenames = texturenames
+        self.backgrounds = backgrounds 
 
         self.brushes = brushes
         self.brushnames = brushnames
@@ -79,55 +82,93 @@ class Collage:
                     self.imglist[-1].mask()
                 if self.tint[i] == 1:
                     self.imglist[-1].blackwhite()
-                if self.point[i] == 2:
+                if self.point[i] == 1:
                     self.imglist[-1].pointillism()
                 x+=1
 
     # call this to automatically draw everything
     def draw(self):
         # draw the background
-        background = Image.new('RGBA', (900, 1100), (0, 255, 255, 255))
+        r, g, b = self.color
+        background = Image.new('RGBA', CANVAS_SIZE, (r, g, b, 255))
 
         # get the background texture
-        bkg = Image.open(self.texturenames[self.textures[0]])
-        width, height = bkg.size
-        if width > 1000 or height > 1100:
-            if width > height:
-                bkg = bkg.rotate(90)
-                # now make the width as large as 1000
-                bkg = bkg.resize((1000, width*1000/height))
-            else:
-                bkg = bkg.resize((1000, height * 1000 / width))
+        for i in range(len(self.backgrounds)):
+            if self.textures[i] == 1:
+                overlay = Image.open(self.texturenames[i]).convert('RGBA')
+                print("adding background")
+                print(self.texturenames[i])
+                w, h = overlay.size 
+                if w < CANVAS_SIZE[0]: 
+                    wpercent = (CANVAS_SIZE[0]/float(w))
+                    hsize = int((float(h)*float(wpercent)))
+                    overlay = overlay.resize((CANVAS_SIZE[0],hsize), PIL.Image.ANTIALIAS)
+                w, h = overlay.size 
+                if h < CANVAS_SIZE[1]: 
+                    wpercent = (CANVAS_SIZE[1]/float(h))
+                    hsize = int((float(w)*float(wpercent)))
+                    overlay = overlay.resize((CANVAS_SIZE[1],hsize), PIL.Image.ANTIALIAS)
+                background.paste(overlay, (0, 0))
+        
+        # bkg = Image.open(self.texturenames[self.textures[0]])
+        # width, height = bkg.size
+        # if width > 1000 or height > 1100:
+        #     if width > height:
+        #         bkg = bkg.rotate(90)
+        #         # now make the width as large as 1000
+        #         bkg = bkg.resize((1000, width*1000/height))
+        #     else:
+        #         bkg = bkg.resize((1000, height * 1000 / width))
 
-            width, height = bkg.size
-            if height < 1100:
-                bkg = bkg.resize((width*1100/height, 1100))
-            bkg = bkg.crop((0, 0, 1000, 1100))
-            bkg.save(self.texturenames[self.textures[0]])
-
-        bkg = Image.open(self.texturenames[self.textures[0]])
-        background.paste(bkg, (0, 0))
+        #     width, height = bkg.size
+        #     if height < 1100:
+        #         bkg = bkg.resize((width*1100/height, 1100))
+        #     bkg = bkg.crop((0, 0, 1000, 1100))
+        #     bkg.save(self.texturenames[self.textures[0]])
+        # bkg = Image.open(self.texturenames[self.textures[0]])
+        # background.paste(bkg, (0, 0))
 
         for i in self.imglist:
             i.place(background)
 
-        # TODO: brush genes
+        # get brush positions
+        brush_pos = positions.get_locations(len(self.brushes), self.p)
+        x = 0
         for i in range(len(self.brushes)):
             if self.brushes[i] == 1:
                 brush = Image.open(self.brushnames[i]).convert('RGBA')
-                background.paste(brush, (pos[0][0], pos[1][0]), mask=brush)
+                background.paste(brush, (brush_pos[x][0], brush_pos[x][0]), mask=brush)
+                x+=1 
 
         # TODO: Overlay genes 
         # add the overlay
-        overlay = Image.open(self.texturenames[self.textures[1]])
-        width, height = overlay.size
-        if width > 1000 or height > 1100:
-            overlay = overlay.crop((0, 0, 1000, 1100))
-            overlay.save(self.texturenames[self.textures[1]])
+        # overlay = Image.open(self.texturenames[self.textures[1]])
+        # width, height = overlay.size
+        # if width > 1000 or height > 1100:
+        #     overlay = overlay.crop((0, 0, 1000, 1100))
+        #     overlay.save(self.texturenames[self.textures[1]])
 
-        overlay = Image.open(self.texturenames[self.textures[1]]).convert('RGBA')
-        overlay_mask = overlay.split()[3].point(lambda i: i * 30 / 100.)
-        background.paste(overlay, (0, 0), mask=overlay_mask)
+        for i in range(len(self.textures)):
+            if self.textures[i] == 1:
+                overlay = Image.open(self.texturenames[i]).convert('RGBA')
+                print("adding texture")
+                print(self.texturenames[i])
+                w, h = overlay.size 
+                if w < CANVAS_SIZE[0]: 
+                    wpercent = (CANVAS_SIZE[0]/float(w))
+                    hsize = int((float(h)*float(wpercent)))
+                    overlay = overlay.resize((CANVAS_SIZE[0],hsize), PIL.Image.ANTIALIAS)
+                w, h = overlay.size 
+                if h < CANVAS_SIZE[1]: 
+                    wpercent = (CANVAS_SIZE[1]/float(h))
+                    hsize = int((float(w)*float(wpercent)))
+                    overlay = overlay.resize((CANVAS_SIZE[1],hsize), PIL.Image.ANTIALIAS)
+                overlay_mask = overlay.split()[3].point(lambda i: i * 20 / 100.)
+                background.paste(overlay, (0, 0), mask=overlay_mask)
+
+        # overlay = Image.open(self.texturenames[self.textures[1]]).convert('RGBA')
+        # overlay_mask = overlay.split()[3].point(lambda i: i * 30 / 100.)
+        # background.paste(overlay, (0, 0), mask=overlay_mask)
 
         self.collage = background
 
@@ -137,6 +178,9 @@ class Collage:
         # to create offspring:
         # images: changing 0->1 and vice versa is a probability of... .3?
         images = [self.geneRandomizer(i, .3) for i in self.images]
+        textures = [self.geneRandomizer(i, .2) for i in self.textures]
+        backgrounds = [self.geneRandomizer(i, .1) for i in self.backgrounds]
+        brushes = [self.geneRandomizer(i, .1) for i in self.brushes]
 
         # p: change it on a normal distribution
         p = np.random.normal(self.p, .1)
@@ -148,7 +192,7 @@ class Collage:
         if random.randrange(2) == 0:
             palette = self.palette
         else:
-            palette = random.randrange(5)
+            palette = random.randint(1, 4)
 
         # edits:
         edits = []
@@ -166,6 +210,7 @@ class Collage:
         # pointillism (0 or color from palette) .3 chance to be something else?
         edits.append([self.geneRandomizer(i, .3) for i in self.images])
 
+        # TODO: brush and texture genes 
         with open(fName, 'w+') as outfile:
             json.dump({
                 "imagenames": self.imagenames,
@@ -174,10 +219,11 @@ class Collage:
                 "palette": palette,
                 "images": images,
                 "edits": edits,
-                "textures": self.textures,
+                "textures": textures,
                 "texturenames": self.texturenames,
-                "brushes": self.brushes,
-                "brushnames": self.brushnames
+                "brushes": brushes,
+                "brushnames": self.brushnames,
+                "backgrounds": backgrounds
             }, outfile, indent=2)
 
     # input: numerical value and probability of a number changing
@@ -212,11 +258,12 @@ class Collage:
                 g3 = int(abs((g + g2) / 2))
                 b3 = int(abs((b + b2) / 2))
                 return (r3, g3, b3)
-            if colorchoice == 1:
+            else:
                 r3 = int(abs((r1 + r2) / 2))
                 g3 = int(abs((g1 + g2) / 2))
                 b3 = int(abs((b1 + b2) / 2))
                 return (r3, g3, b3)
+        return (r1, g1, b1)
 
     def rotationGene(self, value):
         # change the number to something along the distribution
