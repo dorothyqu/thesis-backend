@@ -137,7 +137,8 @@ class Collage:
         for i in range(len(self.brushes)):
             if self.brushes[i] == 1:
                 brush = Image.open(self.brushnames[i]).convert('RGBA')
-                background.paste(brush, (brush_pos[x][0], brush_pos[x][0]), mask=brush)
+                brush_mask = brush.split()[3].point(lambda i: i * 80 / 100.)
+                background.paste(brush, (brush_pos[x][0], brush_pos[x][0]), mask=brush_mask)
                 x+=1 
 
         # TODO: Overlay genes 
@@ -163,7 +164,7 @@ class Collage:
                     wpercent = (CANVAS_SIZE[1]/float(h))
                     hsize = int((float(w)*float(wpercent)))
                     overlay = overlay.resize((CANVAS_SIZE[1],hsize), PIL.Image.ANTIALIAS)
-                overlay_mask = overlay.split()[3].point(lambda i: i * 20 / 100.)
+                overlay_mask = overlay.split()[3].point(lambda i: i * 15 / 100.)
                 background.paste(overlay, (0, 0), mask=overlay_mask)
 
         # overlay = Image.open(self.texturenames[self.textures[1]]).convert('RGBA')
@@ -178,7 +179,7 @@ class Collage:
         # to create offspring:
         # images: changing 0->1 and vice versa is a probability of... .3?
         images = [self.geneRandomizer(i, .3) for i in self.images]
-        textures = [self.geneRandomizer(i, .2) for i in self.textures]
+        textures = [self.geneRandomizer(i, .1) for i in self.textures]
         backgrounds = [self.geneRandomizer(i, .1) for i in self.backgrounds]
         brushes = [self.geneRandomizer(i, .1) for i in self.brushes]
 
