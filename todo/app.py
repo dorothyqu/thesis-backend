@@ -70,8 +70,13 @@ def get_img_urls(year, place, imagePaths, imgNum): # set imgNum to a number if w
 
         cmds = [[
             "/home/dorothy/thesis-backend/backend_env_3.7.9/bin/python",
+            "/home/dorothy/thesis-backend/todo/collage_functions/offspring.py"
+        ] + ["{}.json".format(imgNum)] + [fName] for fName in fNames[0:3]]
+
+        cmds.append([
+            "/home/dorothy/thesis-backend/backend_env_3.7.9/bin/python",
             "/home/dorothy/thesis-backend/todo/collage_functions/evolutionary.py"
-        ] + [fName] for fName in fNames]
+        ] + [fNames[3]])
 
     # execute commands
     print("% Waiting for sub-processes to finish...")

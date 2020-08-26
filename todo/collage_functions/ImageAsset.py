@@ -30,24 +30,30 @@ class ImageAsset:
         self.filter = filter
         self.transparency = transparency
         self.rotation = rotation
+    
+    # go through all the motions of renaming 
+    def rename(self, newname): 
+        self.name = newname
+        self.basename = os.path.basename(self.name)
+        self.img = Image.open(newname).convert('RGBA')
 
     def mask(self):
         edited = self.editpath + os.path.splitext(self.basename)[0] + "crop.png"
         if not path.exists(edited): 
             masking.crop(self.name, edited)
-        self.img = Image.open(edited).convert('RGBA')
+        self.rename(edited)
 
     def blackwhite(self):
         edited = self.editpath + os.path.splitext(self.basename)[0] + "blackwhite.png"
         if not path.exists(edited): 
             masking.blackwhitemask(self.name, edited)
-        self.img = Image.open(edited).convert('RGBA')
+        self.rename(edited)
 
     def pointillism(self):
         edited = self.editpath + os.path.splitext(self.basename)[0] + "point.png"
         if not path.exists(edited):
             masking.point(self.name, edited)
-        self.img = Image.open(edited).convert('RGBA')
+        self.rename(edited)
 
     def colorize(self, r, g, b, a):
         # read the target file
@@ -59,7 +65,7 @@ class ImageAsset:
 
         edited = self.editpath + os.path.splitext(self.basename)[0] + "tinted.png"
         cv2.imwrite(edited, fused_img)
-        self.img = Image.open(edited).convert('RGBA')
+        self.rename(edited)
 
     def place(self, background):
         if self.tint != None:

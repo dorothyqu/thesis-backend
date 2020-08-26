@@ -133,7 +133,7 @@ class Collage:
 
     # create an offspring that is similar to the original parent
     # return the json file with the parent name + 1
-    def createOffspring(self):
+    def createOffspring(self, fName):
         # to create offspring:
         # images: changing 0->1 and vice versa is a probability of... .3?
         images = [self.geneRandomizer(i, .3) for i in self.images]
@@ -163,7 +163,9 @@ class Collage:
         # tint (0 or color from palette) .3 chance to be something else?
         edits.append([self.geneRandomizer(i, .3) for i in self.images])
 
-        fName = PATH_TO_APPEND + "static/{}".format("collage1.json")
+        # pointillism (0 or color from palette) .3 chance to be something else?
+        edits.append([self.geneRandomizer(i, .3) for i in self.images])
+
         with open(fName, 'w+') as outfile:
             json.dump({
                 "imagenames": self.imagenames,
@@ -177,8 +179,6 @@ class Collage:
                 "brushes": self.brushes,
                 "brushnames": self.brushnames
             }, outfile, indent=2)
-
-        return fName
 
     # input: numerical value and probability of a number changing
     def geneRandomizer(self, value, p):

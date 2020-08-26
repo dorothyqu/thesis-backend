@@ -23,20 +23,21 @@ PIC_PATH= ABS_PATH + "decades/cat/"
 PATH_PRE = ABS_PATH + "static/"
 FILE_NAME = None
 
-def setup(collage_json):
-    global colors, pos, collage
+def setup():
+    global colors, pos, offspring, OFFSPRING_JSON
 
     # load up genes
-    with open(collage_json, 'r') as infile:
-        genes = json.load(infile)
+    with open(PARENT_JSON, 'r') as infile:
+        parent_genes = json.load(infile)
     # load the collage 
-    collage = Collage(genes)
+    parent = Collage(parent_genes)
     
     # create the offspring genes 
-    # returns the name of the json file 
-    offspring_json = collage.createOffspring() 
-    with open(offspring_json, 'r') as infile:
+    OFFSPRING_JSON = PATH_PRE + FILE_NAME + ".json"
+    parent.createOffspring(OFFSPRING_JSON) 
+    with open(OFFSPRING_JSON, 'r') as infile:
         genes = json.load(infile)
+
     # load the offspring 
     offspring = Collage(genes)
     offspring.setup()
@@ -51,9 +52,10 @@ def draw():
 
 if __name__ == '__main__':
     # get the full paths for the json and png files
-    defFileName = "collage"
-    if len(sys.argv) > 1: # first arg is the name for the file ex. "collage11"
-        FILE_NAME = sys.argv[1]
+    defFileName = "offspring"
+    if len(sys.argv) > 2: # first arg is the name of the parent json and second is name of the file ex. "collage11"
+        PARENT_JSON = PATH_PRE + sys.argv[1]
+        FILE_NAME = sys.argv[2]
     else:
         print("No filename supplied, defaulting to '{}'".format(defFileName))
         FILE_NAME = defFileName
