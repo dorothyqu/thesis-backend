@@ -29,7 +29,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # todo: test this
 API_BASE = "http://generativepaintings.com:5000" #"http://127.0.0.1:5000/"
 
 # helpful functions
-def get_img_urls(year, place, imagePaths):
+def get_img_urls(year, place, imagePaths, imgNum): # set imgNum to a number if we're offspringing
 
     # open json metadata file and figure out where to save
     mdPath = "{}/metadata.json".format(UPLOAD_FOLDER)
@@ -49,52 +49,43 @@ def get_img_urls(year, place, imagePaths):
     with open(mdPath, "w+") as mdFile:
         json.dump(metadata, mdFile)
 
-    # get the filenames for the 4 initial images
+    # get the filenames for the 4 images
     fNames = ["{}_{}".format(nextIndex, i) for i in range(4)]
-    print("% Creating initial collages:")
+    print("% Creating collages:")
     for name in fNames:
         print(" - {}".format(name))
 
-    # launch sub-processes to create collages credit: https://stackoverflow.com/a/636601 (edited a lil)
-    print("Launching sub-processes:")
-    cmd = [
-        "/home/dorothy/thesis-backend/backend_env_3.7.9/bin/python",
-        "/home/dorothy/thesis-backend/todo/collage_functions/evolutionary.py"
-    ]
-    print(cmd)
-    
-    # running_procs = [Popen(cmd + [fName], stdout=PIPE, stderr=PIPE, universal_newlines=True) for fName in fNames]
+    # launch sub-processes to create collages
+    print("Launching sub-processes (for {} images):".format("initial" if not imgNum else "offspring"))
+    if not imgNum: # initial images
+        cmds = [[
+            "/home/dorothy/thesis-backend/backend_env_3.7.9/bin/python",
+            "/home/dorothy/thesis-backend/todo/collage_functions/evolutionary.py"
+        ] + [fName] for fName in fNames]
+    else: # offspring images
 
-    # wait for them to finish
+        # todo: do something with the image number
+        # imgFile = "{}.png".format(imgNum)
+        # jsonFile = "{}.json".format(imgNum)
+
+        cmds = [[
+            "/home/dorothy/thesis-backend/backend_env_3.7.9/bin/python",
+            "/home/dorothy/thesis-backend/todo/collage_functions/evolutionary.py"
+        ] + [fName] for fName in fNames]
+
+    # execute commands
     print("% Waiting for sub-processes to finish...")
-
-    for fName in fNames:
-        subprocess.call(cmd + [fName])
+    for cmd in cmds:
+        print('----------')
+        print(cmd)
+        print('----------')
+        subprocess.call(cmd)
         print(" - completed a collage")
-
-
-    # while running_procs:
-    #     for proc in running_procs:
-    #         retcode = proc.poll()
-    #         if retcode is not None: # process finished
-    #             running_procs.remove(proc)
-    #             break
-    #         else: # no process is done, wait a bit and check again
-    #             time.sleep(.1)
-    #             continue
-    #     # either we ran out of procs or `proc` has finished with return code `retcode`
-    #     if retcode is not None: # a proc actually finished
-    #         if retcode == 0:
-    #             print("% - A collage has been created")
-    #         else:
-    #             print("% - There was an error creating a collage.")
     print("All collages complete.")
 
-    # return image URLs
-    # imageURLs = ["http://generativepaintings.com:5000/static/{}".format(fName) for fName in fNames]
-    # print(imageURLs)
     imageURLs = [url_for('static', filename="{}.png".format(fName)) for fName in fNames]
     return imageURLs
+
 
 def allowed_file(filename): # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
     return '.' in filename and \
@@ -158,12 +149,31 @@ def get_img():
     else:
         print("Paths to all accepted files:")
         print(accepted_filepaths)
-        imgURLs = get_img_urls(year, place, accepted_filepaths) # make the initial images
+        imgURLs = get_img_urls(year, place, accepted_filepaths, None) # make the initial images
         res = jsonify({
             "img_urls": ["{}{}".format(API_BASE, imgURL) for imgURL in imgURLs]
         })
     res.headers.add('Access-Control-Allow-Origin', '*')  # to fix annoying CORS problem
     return res
+
+
+# generate an image and return image's URL
+@app.route('/collage/offspring', methods=["POST"])
+def get_img_two():
+
+    reqJson = json.loads(request.get_data())
+    selectedImg = reqJson["selected_img"]
+    imgNum = selectedImg.rsplit("/", 1)[1].split(".", 1)[0]
+    print("Received collage offspring requrest w/ selected image: {}".format(selectedImg))
+    print("So our image number is '{}'".format(imgNum))
+
+    imgURLs = get_img_urls(None, None, None, imgNum)
+    res = jsonify({
+        "img_urls": ["{}{}".format(API_BASE, imgURL) for imgURL in imgURLs]
+    })
+    res.headers.add('Access-Control-Allow-Origin', '*')  # to fix annoying CORS problem
+    return res
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000) 
