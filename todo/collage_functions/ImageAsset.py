@@ -4,10 +4,12 @@ import pathlib
 import PIL
 import numpy as np
 import cv2
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageFile
 import sys
 sys.path.append('/Users/dorothyqu/PycharmProjects/thesis/crfasrnn_pytorch')
 from todo.collage_functions import masking
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 class ImageAsset:
     def __init__(self, filename, x, y, tint, filter, transparency, rotation):
@@ -16,17 +18,27 @@ class ImageAsset:
         self.tint = tint
         self.rotate = 0
 
-        # names 
-        self.name = filename
+        # names  
+        self.name = filename 
         self.basename = os.path.basename(self.name)
-        self.img = Image.open(self.name).convert('RGBA')
+        self.img = Image.open(self.name)
+
+        # convert image to png if not a png 
+        if not self.name.endswith('.png'): 
+            self.name = os.path.splitext(filename)[0] + ".png"
+            self.img.save(self.name)
+            self.img = Image.open(self.name).convert('RGBA')
+            # delete old file 
+            os.remove(filename)
+
         self.editpath = str(pathlib.Path(self.name).parent.absolute()) + "/edited/"
 
         self.width, self.height = self.img.size
         if self.width > 1000 or self.height > 1000:
-            self.name.thumbnail((500, 500))
-            self.name.save(self.name)
+            self.img.thumbnail((500, 500))
+            self.img.save(self.name)
             self.width, self.height = self.img.size
+            self.rename(self.name)
         self.filter = filter
         self.transparency = transparency
         self.rotation = rotation

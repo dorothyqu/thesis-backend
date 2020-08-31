@@ -16,6 +16,7 @@ from werkzeug.utils import secure_filename # for securing user-made filenames
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 # UPLOAD_FOLDER = '/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/static/'
 print("Computed upload folder: ")
+UPLOAD_IMG_FOLDER = str(pathlib.Path(__file__).parent.absolute()) + "/decades/cat/"
 UPLOAD_FOLDER = str(pathlib.Path(__file__).parent.absolute()) + "/static/"
 
 print(UPLOAD_FOLDER)
@@ -23,6 +24,7 @@ print(UPLOAD_FOLDER)
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_IMG_FOLDER'] = UPLOAD_IMG_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # todo: test this
 
 # define constants
@@ -101,14 +103,14 @@ def securedAndVersioned(filename, override=False):
     secured = secure_filename(filename)
     [secureFName, secureExt] = secured.rsplit('.', 1)
     if override: # just return the path
-        return os.path.join(app.config['UPLOAD_FOLDER'], secured)
+        return os.path.join(app.config['UPLOAD_IMG_FOLDER'], secured)
     i = 0
     while True: # loop through until we find a file that doesn't exist
         if i == 0:
             fName = secured
         else:
             fName = "{}_{}.{}".format(secureFName, i, secureExt)
-        fullPath = os.path.join(app.config['UPLOAD_FOLDER'], fName)
+        fullPath = os.path.join(app.config['UPLOAD_IMG_FOLDER'], fName)
         if not os.path.exists(fullPath):
             break
         i += 1

@@ -61,9 +61,9 @@ def initializeGenes(fName):
     rotate = [initializeRotation() for i in imagenames]
     tint = [initializeValue(.1) for i in imagenames]
     point = [initializeValue(.1) for i in imagenames]
-    textures = [initializeValue(.1) for i in texturenames]
+    textures = [initializeValue(.05) for i in texturenames]
     backgrounds = [initializeValue(.1) for i in texturenames]
-    brushes = [initializeValue(.1) for i in brushnames]
+    brushes = [initializeValue(.05) for i in brushnames]
 
     edits.append(masks)
     edits.append(blur)

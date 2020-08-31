@@ -138,7 +138,8 @@ class Collage:
             if self.brushes[i] == 1:
                 brush = Image.open(self.brushnames[i]).convert('RGBA')
                 brush_mask = brush.split()[3].point(lambda i: i * 80 / 100.)
-                background.paste(brush, (brush_pos[x][0], brush_pos[x][0]), mask=brush_mask)
+                width, height = brush.size
+                background.paste(brush, (int(brush_pos[x][0] - width/2), int(brush_pos[x][1] - height/2)), mask=brush_mask)
                 x+=1 
 
         # TODO: Overlay genes 
@@ -173,15 +174,19 @@ class Collage:
 
         self.collage = background
 
+    # do this after collage initialization to update filenames --> .png
+    def renameFiles(self): 
+        self.imagenames = [os.path.splitext(f)[0] + ".png" for f in self.imagenames]
+
     # create an offspring that is similar to the original parent
     # return the json file with the parent name + 1
     def createOffspring(self, fName):
         # to create offspring:
         # images: changing 0->1 and vice versa is a probability of... .3?
         images = [self.geneRandomizer(i, .3) for i in self.images]
-        textures = [self.geneRandomizer(i, .1) for i in self.textures]
+        textures = [self.geneRandomizer(i, .05) for i in self.textures]
         backgrounds = [self.geneRandomizer(i, .1) for i in self.backgrounds]
-        brushes = [self.geneRandomizer(i, .1) for i in self.brushes]
+        brushes = [self.geneRandomizer(i, .03) for i in self.brushes]
 
         # p: change it on a normal distribution
         p = np.random.normal(self.p, .1)
@@ -211,7 +216,6 @@ class Collage:
         # pointillism (0 or color from palette) .3 chance to be something else?
         edits.append([self.geneRandomizer(i, .3) for i in self.images])
 
-        # TODO: brush and texture genes 
         with open(fName, 'w+') as outfile:
             json.dump({
                 "imagenames": self.imagenames,
