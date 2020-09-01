@@ -28,7 +28,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # todo: test this
 
 # define constants
-API_BASE = "http://generativepaintings.com:5000" #"http://127.0.0.1:5000/"
+API_BASE = "http://generativepaintings.com:5001" #"http://127.0.0.1:5000/"
 
 # helpful functions
 def get_img_urls(year, place, imagePaths, imgNum, userId): # set imgNum to a number if we're offspringing
