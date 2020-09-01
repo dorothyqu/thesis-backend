@@ -65,16 +65,18 @@ def get_img_urls(year, place, imagePaths, imgNum, userId): # set imgNum to a num
             "/home/dorothy/thesis-backend/todo/collage_functions/evolutionary.py"
         ] + [fName] + [userId] for fName in fNames]
     else: # offspring images
-
-        # todo: do something with the image number
-        # imgFile = "{}.png".format(imgNum)
-        # jsonFile = "{}.json".format(imgNum)
-
+        # add the image number to records.txt
+        records_file = "{}/records.txt".format(UPLOAD_FOLDER)
+        records = open(records_file, "a")  # append mode 
+        records.write(imgNum[-1]+"\n") 
+        records.close() 
+   
         cmds = [[
             "/home/dorothy/thesis-backend/backend_env_3.7.9/bin/python",
             "/home/dorothy/thesis-backend/todo/collage_functions/offspring.py"
         ] + ["{}.json".format(imgNum)] + [fName] for fName in fNames[0:3]]
 
+        # last one has randomized genes to test whether people like evolutionary algs 
         cmds.append([
             "/home/dorothy/thesis-backend/backend_env_3.7.9/bin/python",
             "/home/dorothy/thesis-backend/todo/collage_functions/evolutionary.py"

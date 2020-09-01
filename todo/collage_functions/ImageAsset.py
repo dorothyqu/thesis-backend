@@ -101,11 +101,6 @@ class ImageAsset:
             PILimage = PILimage.filter(ImageFilter.GaussianBlur(radius=2))
             PILimage.save(os.path.splitext(self.name)[0]+"blur.png")
             self.img = Image.open(os.path.splitext(self.name)[0]+"blur.png")
-        if self.filter == "EMBOSS":
-            PILimage = Image.open(self.name)
-            PILimage = PILimage.filter(ImageFilter.EMBOSS)
-            PILimage.save(os.path.splitext(self.name)[0]+"emboss.png")
-            self.img = Image.open(os.path.splitext(self.name)[0]+"emboss.png")
 
         # weird rotation stuff to keep the background transparent
         self.img = self.img.rotate(self.rotation, expand = True, fillcolor = (0, 0, 0, 0))

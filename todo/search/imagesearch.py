@@ -20,6 +20,7 @@ def search_image(query, path, img_id):
     _search_params = {
         'q': query,
         'num': 2,
+        'rights': 'cc_publicdomain'
     }
 
     # this will search and download:
