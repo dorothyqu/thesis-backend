@@ -138,9 +138,6 @@ class Collage:
         # bkg = Image.open(self.texturenames[self.textures[0]])
         # background.paste(bkg, (0, 0))
 
-        for i in self.imglist:
-            i.place(background)
-
         # get brush positions
         brush_pos = positions.get_locations(len(self.brushes), self.p)
         x = 0
@@ -152,13 +149,8 @@ class Collage:
                 background.paste(brush, (int(brush_pos[x][0] - width/2), int(brush_pos[x][1] - height/2)), mask=brush_mask)
                 x+=1 
 
-        # TODO: Overlay genes 
-        # add the overlay
-        # overlay = Image.open(self.texturenames[self.textures[1]])
-        # width, height = overlay.size
-        # if width > 1000 or height > 1100:
-        #     overlay = overlay.crop((0, 0, 1000, 1100))
-        #     overlay.save(self.texturenames[self.textures[1]])
+        for i in self.imglist:
+            i.place(background)
 
         for i in range(len(self.textures)):
             if self.textures[i] == 1:
@@ -229,7 +221,7 @@ class Collage:
         # edits:
         edits = []
         # crop (0 or 1) has a .2 chance of changing
-        edits.append([self.geneRandomizer(i, .2) for i in self.mask])
+        edits.append([self.geneRandomizer(i, .1) for i in self.mask])
         # blur (0 or 1) has a .2 chance of changing
         edits.append([self.geneRandomizer(i, .2) for i in self.blur])
         # rotate (0 to 360) changes on a normal distribution, .3 chance of being random

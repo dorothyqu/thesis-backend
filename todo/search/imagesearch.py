@@ -19,8 +19,7 @@ def search_image(query, path, img_id):
     # define search params:
     _search_params = {
         'q': query,
-        'num': 2,
-        'rights': 'cc_publicdomain'
+        'num': 1,
     }
 
     # this will search and download:
@@ -58,7 +57,9 @@ def gather_images(year, place, id):
         os.makedirs(img_folder+"/edited")
     query = year + " " + place
     # check if query is empty, whereas we do nothing 
-    if query == "": 
+    if query == "null null":
         return 
     else: 
+        print("This is the query")
+        print(query)
         keyword_search(query, img_folder)

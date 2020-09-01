@@ -54,10 +54,11 @@ def point(input_file, output_file):
     # uncomment out for smoothing
     #https://stackoverflow.com/questions/41313642/smooth-edges-of-a-segmented-mask
     img = cv2.imread(input_file, 0)
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (6, 6))
     (thresh, binRed) = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY)
-    opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel, iterations=3)
+    opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel, iterations=1)
     cv2.imwrite(output_file, opening)
+
 
 def blackwhitemask(input_file, output_file):
     print("you're doing black and white stuff")

@@ -133,7 +133,7 @@ def hello_world():
 # generate an image and return image's URL
 @app.route('/collage/req', methods=["POST"])
 def get_img():
-
+    print("Got request")
     year = request.form['year']
     place = request.form['place']
     userId = request.form['userId']
@@ -182,7 +182,7 @@ def get_img_two():
     selectedImg = reqJson["selected_img"]
     userId = reqJson["userId"]
     imgNum = selectedImg.rsplit("/", 1)[1].split(".", 1)[0]
-    print("Received collage offspring requrest w/ selected image: {}".format(selectedImg))
+    print("Received collage offspring request w/ selected image: {}".format(selectedImg))
     print("So our image number is '{}'".format(imgNum))
     print("And our user ID is '{}'".format(userId))
 
