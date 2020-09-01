@@ -47,7 +47,6 @@ def draw():
 
     fullPath = "{}{}".format(PATH_PRE, FILE_NAME)
     correctName = "{}.png".format(fullPath)
-    # saving adds 4 0s for some reason
     offspring.save(correctName)
 
 if __name__ == '__main__':

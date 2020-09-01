@@ -6,6 +6,7 @@ from PIL import Image
 import numpy as np
 from todo.collage_functions import colorpalette, positions
 from todo.collage_functions.ImageAsset import ImageAsset
+import os
 
 PATH_TO_APPEND = str(pathlib.Path(__file__).parent.absolute()) + "/"
 CANVAS_SIZE = (900, 1100)
@@ -43,6 +44,7 @@ class Collage:
         # blur (0 or 1)
         # rotate (0 to 360)
         # tint (0 or color from palette)
+        self.edits = edits
         self.mask = edits[0]
         self.blur = edits[1]
         self.rotate = edits[2]
@@ -85,6 +87,14 @@ class Collage:
                 if self.point[i] == 1:
                     self.imglist[-1].pointillism()
                 x+=1
+            else: # change the extension to png anyways 
+                if not self.imagenames[i].endswith('.png'): 
+                    img = Image.open(self.imagenames[i])
+                    name = os.path.splitext(self.imagenames[i])[0] + ".png"
+                    img.save(name)
+                    # delete old file 
+                    os.remove(self.imagenames[i])
+                    self.imagenames[i] = name 
 
     # call this to automatically draw everything
     def draw(self):
@@ -177,6 +187,22 @@ class Collage:
     # do this after collage initialization to update filenames --> .png
     def renameFiles(self): 
         self.imagenames = [os.path.splitext(f)[0] + ".png" for f in self.imagenames]
+
+    def saveGenes(self, fName): 
+        with open(fName, 'w+') as outfile:
+            json.dump({
+                "imagenames": self.imagenames,
+                "p": self.p,
+                "color": self.color,
+                "palette": self.palette,
+                "images": self.images,
+                "edits": self.edits,
+                "textures": self.textures,
+                "texturenames": self.texturenames,
+                "brushes": self.brushes,
+                "brushnames": self.brushnames,
+                "backgrounds": self.backgrounds
+            }, outfile, indent=2)
 
     # create an offspring that is similar to the original parent
     # return the json file with the parent name + 1

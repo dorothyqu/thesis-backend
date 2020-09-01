@@ -9,6 +9,8 @@ import pathlib
 import os
 from werkzeug.utils import secure_filename # for securing user-made filenames
 
+from search.imagesearch import gather_images
+
 # # set to true in production
 # IS_PRODUCTION = False
 
@@ -16,7 +18,6 @@ from werkzeug.utils import secure_filename # for securing user-made filenames
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 # UPLOAD_FOLDER = '/Users/dorothyqu/PycharmProjects/thesis/thesis_backend/todo/static/'
 print("Computed upload folder: ")
-UPLOAD_IMG_FOLDER = str(pathlib.Path(__file__).parent.absolute()) + "/decades/cat/"
 UPLOAD_FOLDER = str(pathlib.Path(__file__).parent.absolute()) + "/static/"
 
 print(UPLOAD_FOLDER)
@@ -24,14 +25,13 @@ print(UPLOAD_FOLDER)
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['UPLOAD_IMG_FOLDER'] = UPLOAD_IMG_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # todo: test this
 
 # define constants
 API_BASE = "http://generativepaintings.com:5000" #"http://127.0.0.1:5000/"
 
 # helpful functions
-def get_img_urls(year, place, imagePaths, imgNum): # set imgNum to a number if we're offspringing
+def get_img_urls(year, place, imagePaths, imgNum, userId): # set imgNum to a number if we're offspringing
 
     # open json metadata file and figure out where to save
     mdPath = "{}/metadata.json".format(UPLOAD_FOLDER)
@@ -63,7 +63,7 @@ def get_img_urls(year, place, imagePaths, imgNum): # set imgNum to a number if w
         cmds = [[
             "/home/dorothy/thesis-backend/backend_env_3.7.9/bin/python",
             "/home/dorothy/thesis-backend/todo/collage_functions/evolutionary.py"
-        ] + [fName] for fName in fNames]
+        ] + [fName] + [userId] for fName in fNames]
     else: # offspring images
 
         # todo: do something with the image number
@@ -78,7 +78,7 @@ def get_img_urls(year, place, imagePaths, imgNum): # set imgNum to a number if w
         cmds.append([
             "/home/dorothy/thesis-backend/backend_env_3.7.9/bin/python",
             "/home/dorothy/thesis-backend/todo/collage_functions/evolutionary.py"
-        ] + [fNames[3]])
+        ] + [fNames[3]] + [userId])
 
     # execute commands
     print("% Waiting for sub-processes to finish...")
@@ -99,9 +99,13 @@ def allowed_file(filename): # https://flask.palletsprojects.com/en/1.1.x/pattern
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # secure a filename and optionally override existing files. Returns absolute path
-def securedAndVersioned(filename, override=False):
+def securedAndVersioned(filename, userId, override=False):
     secured = secure_filename(filename)
     [secureFName, secureExt] = secured.rsplit('.', 1)
+
+    UPLOAD_IMG_FOLDER = str(pathlib.Path(__file__).parent.absolute()) + "/images/" + str(userId)
+    app.config['UPLOAD_IMG_FOLDER'] = UPLOAD_IMG_FOLDER
+
     if override: # just return the path
         return os.path.join(app.config['UPLOAD_IMG_FOLDER'], secured)
     i = 0
@@ -130,7 +134,11 @@ def get_img():
 
     year = request.form['year']
     place = request.form['place']
+    userId = request.form['userId']
     print("Received collage request w/ year '{}' and place '{}'".format(year, place))
+    print("With ID '{}'".format(userId))
+
+    gather_images(year, place, userId)
 
     errors = [] # aggregate errors
     accepted_filenames = [] # aggregate saved files
@@ -142,7 +150,7 @@ def get_img():
         elif not allowed_file(file.filename): # extension not allowed # todo: test this
             errors.append({"extension '{}'".format(file.filename): "not allowed"})
         else:
-            filePath = securedAndVersioned(file.filename, override=False) # append a number for version control
+            filePath = securedAndVersioned(file.filename, userId, override=False) # append a number for version control
             file.save(filePath)
             print("Saved '{}' as '{}'".format(file.filename, filePath))
             accepted_filenames.append(file.filename)
@@ -156,7 +164,7 @@ def get_img():
     else:
         print("Paths to all accepted files:")
         print(accepted_filepaths)
-        imgURLs = get_img_urls(year, place, accepted_filepaths, None) # make the initial images
+        imgURLs = get_img_urls(year, place, accepted_filepaths, None, userId) # make the initial images
         res = jsonify({
             "img_urls": ["{}{}".format(API_BASE, imgURL) for imgURL in imgURLs]
         })
@@ -170,11 +178,13 @@ def get_img_two():
 
     reqJson = json.loads(request.get_data())
     selectedImg = reqJson["selected_img"]
+    userId = reqJson["userId"]
     imgNum = selectedImg.rsplit("/", 1)[1].split(".", 1)[0]
     print("Received collage offspring requrest w/ selected image: {}".format(selectedImg))
     print("So our image number is '{}'".format(imgNum))
+    print("And our user ID is '{}'".format(userId))
 
-    imgURLs = get_img_urls(None, None, None, imgNum)
+    imgURLs = get_img_urls(None, None, None, imgNum, userId)
     res = jsonify({
         "img_urls": ["{}{}".format(API_BASE, imgURL) for imgURL in imgURLs]
     })
