@@ -4,8 +4,13 @@ import random
 import PIL
 from PIL import Image
 import numpy as np
-from todo.collage_functions import colorpalette, positions
-from todo.collage_functions.ImageAsset import ImageAsset
+import importlib
+# from thesis-backend.todo.collage_functions import colorpalette, positions
+colorpalette = importlib.import_module("thesis-backend.todo.collage_functions.colorpalette")
+positions = importlib.import_module("thesis-backend.todo.collage_functions.positions")
+temp = importlib.import_module("thesis-backend.todo.collage_functions.ImageAsset")
+ImageAsset = temp.ImageAsset
+# from thesis-backend.todo.collage_functions.ImageAsset import ImageAsset
 import os
 
 PATH_TO_APPEND = str(pathlib.Path(__file__).parent.absolute()) + "/"

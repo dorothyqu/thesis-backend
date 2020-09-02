@@ -7,7 +7,8 @@ import cv2
 from PIL import Image, ImageFilter, ImageFile
 import sys
 sys.path.append('/Users/dorothyqu/PycharmProjects/thesis/crfasrnn_pytorch')
-from todo.collage_functions import masking
+import importlib
+masking = importlib.import_module("thesis-backend.todo.collage_functions.masking")
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 

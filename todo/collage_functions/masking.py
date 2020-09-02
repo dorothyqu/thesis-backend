@@ -5,7 +5,8 @@ import os
 import numpy as np
 from PIL import Image
 # from flask import
-from todo.crfasrnn_pytorch.run_demo import get_labels
+import importlib 
+run_demo = importlib.import_module("thesis-backend.todo.crfasrnn_pytorch.run_demo")
 
 PATH_TO_APPEND = str(pathlib.Path(__file__).parent.parent.absolute()) + "/"
 
@@ -18,7 +19,7 @@ def crop(input_file, output_file):
     rgba_image = PIL.Image.open(input_file)
     rgb_image = rgba_image.convert('RGB')
     rgb_image.save(precrop)
-    get_labels(precrop)
+    run_demo.get_labels(precrop)
 
     # upload source image, add alpha channel
     src = np.array(Image.open(precrop))

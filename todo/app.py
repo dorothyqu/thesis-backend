@@ -9,7 +9,7 @@ import pathlib
 import os
 from werkzeug.utils import secure_filename # for securing user-made filenames
 
-from search.imagesearch import gather_images
+from todo.search.imagesearch import gather_images
 
 # # set to true in production
 # IS_PRODUCTION = False
@@ -28,7 +28,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # todo: test this
 
 # define constants
-API_BASE = "http://generativepaintings.com:5001" #"http://127.0.0.1:5000/"
+API_BASE = "https://generativepaintings.com:5001" #"http://127.0.0.1:5000/"
 
 # helpful functions
 def get_img_urls(year, place, imagePaths, imgNum, userId): # set imgNum to a number if we're offspringing
@@ -92,7 +92,8 @@ def get_img_urls(year, place, imagePaths, imgNum, userId): # set imgNum to a num
         print(" - completed a collage")
     print("All collages complete.")
 
-    imageURLs = [url_for('static', filename="{}.png".format(fName)) for fName in fNames]
+    imageURLs = ["{}/static/{}.png".format(API_BASE, fName) for fName in fNames] # production/dev
+    # imageURLs = [url_for('static', filename="{}.png".format(fName)) for fName in fNames] # dev
     return imageURLs
 
 
@@ -168,8 +169,14 @@ def get_img():
         print(accepted_filepaths)
         imgURLs = get_img_urls(year, place, accepted_filepaths, None, userId) # make the initial images
         res = jsonify({
-            "img_urls": ["{}{}".format(API_BASE, imgURL) for imgURL in imgURLs]
+            # "img_urls": ["{}{}".format(API_BASE, imgURL) for imgURL in imgURLs]
+            "img_urls" : imgURLs
         })
+    
+    print('Returning the folllowing image URLS:')
+    for imgURL in imgURLs:
+        print(" - {}".format(imgURL))
+    
     res.headers.add('Access-Control-Allow-Origin', '*')  # to fix annoying CORS problem
     return res
 
@@ -188,8 +195,11 @@ def get_img_two():
 
     imgURLs = get_img_urls(None, None, None, imgNum, userId)
     res = jsonify({
-        "img_urls": ["{}{}".format(API_BASE, imgURL) for imgURL in imgURLs]
+        "img_urls": imgURLs # ["{}{}".format(API_BASE, imgURL) for imgURL in imgURLs]
     })
+    print('Returning the folllowing image URLS:')
+    for imgURL in imgURLs:
+        print(" - {}".format(imgURL))
     res.headers.add('Access-Control-Allow-Origin', '*')  # to fix annoying CORS problem
     return res
 

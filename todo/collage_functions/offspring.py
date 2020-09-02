@@ -6,16 +6,17 @@ import os
 import pathlib
 import sys
 import numpy as np
+import importlib
 
 sys.path.append("..") # Adds higher directory to python modules path.
-from todo.collage_functions.colorpalette import randomcolor
 
 PATH_TO_APPEND = str(pathlib.Path(__file__).parent.parent.parent.absolute()) + "/"
 print("Appending path: " + PATH_TO_APPEND)
 sys.path.append(PATH_TO_APPEND)
 
 import random
-from todo.collage_functions.Collage import Collage
+temp = importlib.import_module("thesis-backend.todo.collage_functions.Collage")
+Collage = temp.Collage 
 
 ABS_PATH= PATH_TO_APPEND + "todo/"
 PIC_PATH= ABS_PATH + "decades/cat/"

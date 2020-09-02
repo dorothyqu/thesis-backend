@@ -5,16 +5,18 @@ import pathlib
 import sys
 import numpy as np
 from PIL import Image, ImageFilter, ImageFile
+import importlib
 
 sys.path.append("..") # Adds higher directory to python modules path.
-from todo.collage_functions.colorpalette import randomcolor
-
+# from thesis-backend.todo.collage_functions.colorpalette import randomcolor
+colorpalette = importlib.import_module("thesis-backend.todo.collage_functions.colorpalette")
 PATH_TO_APPEND = str(pathlib.Path(__file__).parent.parent.parent.absolute()) + "/"
 print("Appending path: " + PATH_TO_APPEND)
 sys.path.append(PATH_TO_APPEND)
 
 import random
-from todo.collage_functions.Collage import Collage
+temp = importlib.import_module("thesis-backend.todo.collage_functions.Collage")
+Collage = temp.Collage 
 
 ABS_PATH= PATH_TO_APPEND + "todo/"
 PIC_PATH= ABS_PATH + "images/" 
@@ -61,7 +63,7 @@ def initializeGenes(fName):
     brushnames = [f for f in brushnames if os.path.isfile(f)]
 
     p = np.random.normal(.5, .1)
-    color = randomcolor()
+    color = colorpalette.randomcolor()
     palette = random.randint(1, 4)
 
     imageprob = random.random() # do we want tons of pics or not many

@@ -25,9 +25,10 @@ import pathlib
 import sys
 
 import torch
+import importlib
 
-from todo.crfasrnn_pytorch.crfasrnn import util
-from todo.crfasrnn_pytorch.crfasrnn.crfasrnn_model import CrfRnnNet
+util = importlib.import_module("thesis-backend.todo.crfasrnn_pytorch.crfasrnn.util")
+crfasrnn_model = importlib.import_module("thesis-backend.todo.crfasrnn_pytorch.crfasrnn.crfasrnn_model")
 
 WEIGHTS_PATH = str(pathlib.Path(__file__).parent.parent.absolute()) 
 print("Weights path: " + WEIGHTS_PATH + "/crfasrnn_pytorch/crfasrnn_weights.pth")
@@ -37,7 +38,7 @@ def get_labels(input_file):
     img_data, img_h, img_w, size = util.get_preprocessed_image(input_file)
 
     print("loading model")
-    model = CrfRnnNet()
+    model = crfasrnn_model.CrfRnnNet()
     model.load_state_dict(torch.load(WEIGHTS_PATH + "/crfasrnn_pytorch/crfasrnn_weights.pth"))
     model.eval()
     out = model.forward(torch.from_numpy(img_data))
