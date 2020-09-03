@@ -25,7 +25,7 @@ print(UPLOAD_FOLDER)
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # todo: test this
+# app.config['MAX_CONTENT_LENGTH'] = 104857600 # 50 * 1024 * 1024 * 1024 # todo: test this
 
 # define constants
 API_BASE = "https://generativepaintings.com:5001" #"http://127.0.0.1:5000/"
