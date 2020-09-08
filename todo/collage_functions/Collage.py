@@ -123,7 +123,8 @@ class Collage:
                     wpercent = (CANVAS_SIZE[1]/float(h))
                     hsize = int((float(w)*float(wpercent)))
                     overlay = overlay.resize((CANVAS_SIZE[1],hsize), PIL.Image.ANTIALIAS)
-                background.paste(overlay, (0, 0))
+                overlay_mask = overlay.split()[3].point(lambda i: i * 50 / 100.)
+                background.paste(overlay, (0, 0), mask=overlay_mask)
         
         # bkg = Image.open(self.texturenames[self.textures[0]])
         # width, height = bkg.size
@@ -172,7 +173,7 @@ class Collage:
                     wpercent = (CANVAS_SIZE[1]/float(h))
                     hsize = int((float(w)*float(wpercent)))
                     overlay = overlay.resize((CANVAS_SIZE[1],hsize), PIL.Image.ANTIALIAS)
-                overlay_mask = overlay.split()[3].point(lambda i: i * 15 / 100.)
+                overlay_mask = overlay.split()[3].point(lambda i: i * 5 / 100.)
                 background.paste(overlay, (0, 0), mask=overlay_mask)
 
         # overlay = Image.open(self.texturenames[self.textures[1]]).convert('RGBA')
@@ -206,9 +207,9 @@ class Collage:
     def createOffspring(self, fName):
         # to create offspring:
         # images: changing 0->1 and vice versa is a probability of... .3?
-        images = [self.geneRandomizer(i, .3) for i in self.images]
+        images = [self.geneRandomizer(i, .1) for i in self.images]
         textures = [self.geneRandomizer(i, .05) for i in self.textures]
-        backgrounds = [self.geneRandomizer(i, .1) for i in self.backgrounds]
+        backgrounds = [self.geneRandomizer(i, .05) for i in self.backgrounds]
         brushes = [self.geneRandomizer(i, .03) for i in self.brushes]
 
         # p: change it on a normal distribution
@@ -234,10 +235,10 @@ class Collage:
         edits.append([self.rotationGene(i) for i in self.rotate])
 
         # tint (0 or color from palette) .3 chance to be something else?
-        edits.append([self.geneRandomizer(i, .3) for i in self.images])
+        edits.append([self.geneRandomizer(i, .3) for i in self.tint])
 
         # pointillism (0 or color from palette) .3 chance to be something else?
-        edits.append([self.geneRandomizer(i, .3) for i in self.images])
+        edits.append([self.geneRandomizer(i, .05) for i in self.point])
 
         with open(fName, 'w+') as outfile:
             json.dump({

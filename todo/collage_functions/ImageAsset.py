@@ -108,4 +108,4 @@ class ImageAsset:
 
         # paste the image, with transparency 
         overlay_mask = self.img.split()[3].point(lambda i: i * self.transparency / 100.)
-        Image.Image.paste(background, self.img, (int(self.x - self.width/2), int(self.y - self.height/2)), mask=self.img)
+        Image.Image.paste(background, self.img, (int(self.x - self.width/2), int(self.y - self.height/2)), mask=overlay_mask)

@@ -66,17 +66,17 @@ def initializeGenes(fName):
     color = colorpalette.randomcolor()
     palette = random.randint(1, 4)
 
-    imageprob = random.random() # do we want tons of pics or not many
+    # imageprob = random.random() # do we want tons of pics or not many
     images = [initializeValue(.3) for i in imagenames]
 
     edits = []
-    masks = [initializeValue(.03) for i in imagenames]
+    masks = [initializeValue(.08) for i in imagenames]
     blur = [initializeValue(.05) for i in imagenames]
     rotate = [initializeRotation() for i in imagenames]
     tint = [initializeValue(.15) for i in imagenames]
-    point = [initializeValue(.1) for i in imagenames]
-    textures = [initializeValue(.05) for i in texturenames]
-    backgrounds = [initializeValue(.1) for i in texturenames]
+    point = [initializeValue(.05) for i in imagenames]
+    textures = [initializeValue(.01) for i in texturenames]
+    backgrounds = [initializeValue(.05) for i in texturenames]
     brushes = [initializeValue(.05) for i in brushnames]
 
     edits.append(masks)
